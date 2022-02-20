@@ -1,9 +1,10 @@
 on:
   pull_request:
 
+env:
+  GO_VERSION: 1.17
+
 jobs:
-  env:
-    GO_VERSION: 1.17
   setup:
     runs-on: ubuntu-latest
     steps:
@@ -36,7 +37,7 @@ jobs:
   lint:
     needs: setup
     runs-on: ubuntu-latest
-    step:
+    steps:
       - name: Checkout
         uses: actions/checkout@v2
 
