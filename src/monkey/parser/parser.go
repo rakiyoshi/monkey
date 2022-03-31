@@ -11,17 +11,17 @@ import (
 const (
 	_ int = iota
 	LOWEST
-	EQUALS 		// ==
+	EQUALS      // ==
 	LESSGREATER // > or <
-	SUM 		// +
-	PRODUCT 	// *
-	PREFIX 		// -X or !X
-	CALL 		// myFunction(X)
+	SUM         // +
+	PRODUCT     // *
+	PREFIX      // -X or !X
+	CALL        // myFunction(X)
 )
 
 type (
 	prefixParseFn func() ast.Expression
-	infixParseFn func(ast.Expression) ast.Expression
+	infixParseFn  func(ast.Expression) ast.Expression
 )
 
 type Parser struct {
@@ -33,7 +33,7 @@ type Parser struct {
 	peekToken token.Token
 
 	prefixParseFns map[token.TokenType]prefixParseFn
-	infixParseFns map[token.TokenType]infixParseFn
+	infixParseFns  map[token.TokenType]infixParseFn
 }
 
 func New(l *lexer.Lexer) *Parser {

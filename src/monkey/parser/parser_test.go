@@ -92,7 +92,7 @@ return 993322;
 
 	if len(program.Statements) != 3 {
 		t.Fatalf("program.Statements does not contain 3 statements. got=%d,",
-		len(program.Statements))
+			len(program.Statements))
 	}
 
 	for _, stmt := range program.Statements {
@@ -118,12 +118,12 @@ func TestIdentifierExpression(t *testing.T) {
 
 	if len(program.Statements) != 1 {
 		t.Fatalf("program has not enough statements. got=%d",
-		len(program.Statements))
+			len(program.Statements))
 	}
 	stmt, ok := program.Statements[0].(*ast.ExpressionStatement)
 	if !ok {
 		t.Fatalf("program.Statements[0] is not ast.ExpressionStatement. got=%T",
-		program.Statements[0])
+			program.Statements[0])
 	}
 
 	ident, ok := stmt.Expression.(*ast.Identifier)
@@ -135,7 +135,7 @@ func TestIdentifierExpression(t *testing.T) {
 	}
 	if ident.TokenLiteral() != "foobar" {
 		t.Errorf("ident.TokenLiteral not %s. got=%s", "foobar",
-		ident.TokenLiteral())
+			ident.TokenLiteral())
 	}
 }
 
@@ -149,13 +149,13 @@ func TestIntegerLiteralExpression(t *testing.T) {
 
 	if len(program.Statements) != 1 {
 		t.Fatalf("program has not enough statements. got=%d",
-		len(program.Statements))
+			len(program.Statements))
 	}
 
 	stmt, ok := program.Statements[0].(*ast.ExpressionStatement)
 	if !ok {
 		t.Fatalf("program.Statements[0] is not ast.ExpressionStatement. got=%T",
-	program.Statements[0])
+			program.Statements[0])
 	}
 
 	literal, ok := stmt.Expression.(*ast.IntegerLiteral)
@@ -167,6 +167,6 @@ func TestIntegerLiteralExpression(t *testing.T) {
 	}
 	if literal.TokenLiteral() != "5" {
 		t.Errorf("literal.TokenLiteral not %s. got=%s", "5",
-		literal.TokenLiteral())
+			literal.TokenLiteral())
 	}
 }
