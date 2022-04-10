@@ -24,6 +24,11 @@ type Program struct {
 	Statements []Statement
 }
 
+type Boolean struct {
+	Token token.Token
+	Value bool
+}
+
 func (p *Program) TokenLiteral() string {
 	if len(p.Statements) > 0 {
 		return p.Statements[0].TokenLiteral()
@@ -157,3 +162,7 @@ func (oe *InfixExpression) String() string {
 
 	return out.String()
 }
+
+func (b *Boolean) expressionNode()      {}
+func (b *Boolean) TokenLiteral() string { return b.Token.Literal }
+func (b *Boolean) String() string       { return b.Token.Literal }
