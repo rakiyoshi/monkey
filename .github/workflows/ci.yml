@@ -4,6 +4,9 @@ on:
 env:
   GO_VERSION: 1.17
 
+permissions:
+  contents: read
+
 jobs:
   setup:
     runs-on: ubuntu-latest
