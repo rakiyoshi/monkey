@@ -274,12 +274,7 @@ func (p *Parser) ParseInfixExpression(left ast.Expression) ast.Expression {
 
 	precedences := p.curPrecedence()
 	p.nextToken()
-
-	if expression.Operator == "+" {
-		expression.Right = p.parseExpression(precedences - 1)
-	} else {
-		expression.Right = p.parseExpression(precedences)
-	}
+	expression.Right = p.parseExpression(precedences)
 
 	return expression
 }
