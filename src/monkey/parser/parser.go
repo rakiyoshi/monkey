@@ -85,7 +85,9 @@ func (p *Parser) ParseProgram() *ast.Program {
 	program.Statements = []ast.Statement{}
 
 	for p.curToken.Type != token.EOF {
+		//nolint:staticcheck // To be implemented
 		stmt := p.parseStatement()
+		//nolint:staticcheck // To be implemented
 		if stmt != nil {
 			program.Statements = append(program.Statements, stmt)
 		}
@@ -94,6 +96,7 @@ func (p *Parser) ParseProgram() *ast.Program {
 	return program
 }
 
+//nolint:staticcheck // To be implemented
 func (p *Parser) parseStatement() ast.Statement {
 	switch p.curToken.Type {
 	case token.LET:
