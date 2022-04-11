@@ -45,7 +45,6 @@ func (p *Program) String() string {
 	return out.String()
 }
 
-
 // Statements
 type ReturnStatement struct {
 	Token       token.Token
@@ -107,12 +106,12 @@ func (ls *LetStatement) String() string {
 }
 
 type BlockStatement struct {
-	Token token.Token // { token
+	Token      token.Token // { token
 	Statements []Statement
 }
 
-func (bs *BlockStatement) statementNode() {}
-func (bs *BlockStatement) ToeknLiteral() string {return bs.Token.Literal}
+func (bs *BlockStatement) statementNode()       {}
+func (bs *BlockStatement) ToeknLiteral() string { return bs.Token.Literal }
 func (bs *BlockStatement) String() string {
 	var out bytes.Buffer
 
@@ -122,7 +121,6 @@ func (bs *BlockStatement) String() string {
 
 	return out.String()
 }
-
 
 // Expressions
 type Identifier struct {
@@ -192,14 +190,14 @@ func (ie *InfixExpression) String() string {
 }
 
 type IfExpression struct {
-	Token token.Token
-	Condition Expression
+	Token       token.Token
+	Condition   Expression
 	Consequence *BlockStatement
 	Alternative *BlockStatement
 }
 
-func (ie *IfExpression) expressionNode() {}
-func (ie *IfExpression) TokenLiteral() string {return ie.Token.Literal}
+func (ie *IfExpression) expressionNode()      {}
+func (ie *IfExpression) TokenLiteral() string { return ie.Token.Literal }
 func (ie *IfExpression) String() string {
 	var out bytes.Buffer
 
