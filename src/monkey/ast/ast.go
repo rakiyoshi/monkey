@@ -111,6 +111,7 @@ type BlockStatement struct {
 	Statements []Statement
 }
 
+// nolint:unused // to be used
 func (bs *BlockStatement) statementNode()       {}
 func (bs *BlockStatement) ToeknLiteral() string { return bs.Token.Literal }
 func (bs *BlockStatement) String() string {
