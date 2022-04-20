@@ -39,16 +39,50 @@ func Start(in io.Reader, out io.Writer) {
 			continue
 		}
 
-		io.WriteString(out, program.String())
-		io.WriteString(out, "\n")
+		{
+			_, err := io.WriteString(out, program.String())
+			if err != nil {
+				panic(err)
+			}
+		}
+		{
+			_, err := io.WriteString(out, "\n")
+			if err != nil {
+				panic(err)
+			}
+		}
 	}
 }
 
 func printParserErrors(out io.Writer, errors []string) {
-	io.WriteString(out, KABAO)
-	io.WriteString(out, "すごい一体感を感じる。今までにない何か熱い一体感を。\n")
-	io.WriteString(out, "parser errors: \n ")
+	{
+		_, err := io.WriteString(out, KABAO)
+		if err != nil {
+			panic(err)
+		}
+	}
+	{
+		_, err := io.WriteString(out, "すごい一体感を感じる。今までにない何か熱い一体感を。\n")
+		if err != nil {
+			panic(err)
+		}
+	}
+	{
+		_, err := io.WriteString(out, "\n")
+		if err != nil {
+			panic(err)
+		}
+	}
+	{
+		_, err := io.WriteString(out, "parser errors: \n ")
+		if err != nil {
+			panic(err)
+		}
+	}
 	for _, msg := range errors {
-		io.WriteString(out, fmt.Sprintf("\t%s\n", msg))
+		_, err := io.WriteString(out, fmt.Sprintf("\t%s\n", msg))
+		if err != nil {
+			panic(err)
+		}
 	}
 }
