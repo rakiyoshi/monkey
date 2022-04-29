@@ -113,7 +113,7 @@ type BlockStatement struct {
 
 // nolint:unused // to be used
 func (bs *BlockStatement) statementNode()       {}
-func (bs *BlockStatement) ToeknLiteral() string { return bs.Token.Literal }
+func (bs *BlockStatement) TokenLiteral() string { return bs.Token.Literal }
 func (bs *BlockStatement) String() string {
 	var out bytes.Buffer
 
