@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"io"
+	"monkey/evaluator"
 	"monkey/lexer"
 	"monkey/parser"
 )
@@ -39,16 +40,19 @@ func Start(in io.Reader, out io.Writer) {
 			continue
 		}
 
-		{
-			_, err := io.WriteString(out, program.String())
-			if err != nil {
-				panic(err)
+		evaluated := evaluator.Eval(program)
+		if evaluated != nil {
+			{
+				_, err := io.WriteString(out, evaluated.Inspect())
+				if err != nil {
+					panic(err)
+				}
 			}
-		}
-		{
-			_, err := io.WriteString(out, "\n")
-			if err != nil {
-				panic(err)
+			{
+				_, err := io.WriteString(out, "\n")
+				if err != nil {
+					panic(err)
+				}
 			}
 		}
 	}
@@ -62,7 +66,8 @@ func printParserErrors(out io.Writer, errors []string) {
 		}
 	}
 	{
-		_, err := io.WriteString(out, "すごい一体感を感じる。今までにない何か熱い一体感を。\n")
+		_, err := io.WriteString(out,
+			"すごい一体感を感じる。今までにない何か熱い一体感を。\n")
 		if err != nil {
 			panic(err)
 		}
