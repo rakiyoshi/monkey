@@ -46,13 +46,36 @@ func Eval(node ast.Node) object.Object {
 	return nil
 }
 
-func nativeBoolToBooleanObject(input bool) *object.Boolean {
-	if input {
-		return TRUE
+// statements
+func evalProgram(program *ast.Program) object.Object {
+	var result object.Object
+
+	for _, statement := range program.Statements {
+		result = Eval(statement)
+
+		if returnValue, ok := result.(*object.ReturnValue); ok {
+			return returnValue.Value
+		}
 	}
-	return FALSE
+
+	return result
 }
 
+func evalBlockStatement(block *ast.BlockStatement) object.Object {
+	var result object.Object
+
+	for _, statement := range block.Statements {
+		result = Eval(statement)
+
+		if result != nil && result.Type() == object.RETURN_VALUE_OBJ {
+			return result
+		}
+	}
+
+	return result
+}
+
+// expressions
 func evalPrefixExpression(operator string, right object.Object) object.Object {
 	switch operator {
 	case "!":
@@ -143,6 +166,7 @@ func evalIfExpression(ie *ast.IfExpression) object.Object {
 	}
 }
 
+// helpers
 func isTruthy(obj object.Object) bool {
 	switch obj {
 	case NULL:
@@ -156,30 +180,9 @@ func isTruthy(obj object.Object) bool {
 	}
 }
 
-func evalProgram(program *ast.Program) object.Object {
-	var result object.Object
-
-	for _, statement := range program.Statements {
-		result = Eval(statement)
-
-		if returnValue, ok := result.(*object.ReturnValue); ok {
-			return returnValue.Value
-		}
+func nativeBoolToBooleanObject(input bool) *object.Boolean {
+	if input {
+		return TRUE
 	}
-
-	return result
-}
-
-func evalBlockStatement(block *ast.BlockStatement) object.Object {
-	var result object.Object
-
-	for _, statement := range block.Statements {
-		result = Eval(statement)
-
-		if result != nil && result.Type() == object.RETURN_VALUE_OBJ {
-			return result
-		}
-	}
-
-	return result
+	return FALSE
 }
