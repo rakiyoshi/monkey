@@ -294,11 +294,47 @@ func TestBuiltinFunctions(t *testing.T) {
 		input    string
 		expected interface{}
 	}{
+		// len
 		{`len("")`, 0},
 		{`len("four")`, 4},
 		{`len("hello world")`, 11},
 		{`len(1)`, "argument to `len` not supported, got INTEGER"},
 		{`len("one", "two")`, "wrong number of arguments. got=2, want=1"},
+		{`len([])`, 0},
+		{`len([1, 2])`, 2},
+		{`len([1, "2", 3 + 0])`, 3},
+		{`len([1], [2, 3])`, "wrong number of arguments. got=2, want=1"},
+		// first
+		{`first([1, 2, 3])`, 1},
+		{`first([1])`, 1},
+		{`first([1 + 1, 3])`, 2},
+		{`first([1], [2])`, "wrong number of arguments. got=2, want=1"},
+		{`first(1)`, "argument to `first` must be ARRAY, got=INTEGER"},
+		{`first([])`, nil},
+		// last
+		{`last([1, 2, 3])`, 3},
+		{`last([1])`, 1},
+		{`last([1, 1 + 2])`, 3},
+		{`last([1], [2])`, "wrong number of arguments. got=2, want=1"},
+		{`last(1)`, "argument to `last` must be ARRAY, got=INTEGER"},
+		{`last([])`, nil},
+		// rest
+		{`rest([1, 2, 3])`, []int{2, 3}},
+		{`rest(rest([1, 2, 3]))`, []int{3}},
+		{`rest([1])`, []int{}},
+		{`let a = [1, 2, 3]; rest(a);`, []int{2, 3}},
+		{`let a = [1, 2, 3]; rest(a); a;`, []int{1, 2, 3}},
+		{`rest([1], [2])`, "wrong number of arguments. got=2, want=1"},
+		{`rest(1)`, "argument to `rest` must be ARRAY, got=INTEGER"},
+		{`rest([])`, nil},
+		// push
+		{`push([1, 2], 3)`, []int{1, 2, 3}},
+		{`push(push([1], 2), 3)`, []int{1, 2, 3}},
+		{`push([], 1)`, []int{1}},
+		{`let a = [1, 2]; push(a, 3);`, []int{1, 2, 3}},
+		{`let a = [1, 2]; push(a, 3); a;`, []int{1, 2}},
+		{`push([1])`, "wrong number of arguments. got=1, want=2"},
+		{`push(1, 1)`, "argument to `push` must be ARRAY, got=INTEGER"},
 	}
 
 	for _, tt := range tests {
@@ -307,6 +343,8 @@ func TestBuiltinFunctions(t *testing.T) {
 		switch expected := tt.expected.(type) {
 		case int:
 			testIntegerObject(t, evaluated, int64(expected))
+		case nil:
+			testNullObject(t, evaluated)
 		case string:
 			errObj, ok := evaluated.(*object.Error)
 			if !ok {
@@ -315,6 +353,20 @@ func TestBuiltinFunctions(t *testing.T) {
 			}
 			if errObj.Message != expected {
 				t.Errorf("wrong error message. expected=%q, got=%q", expected, errObj.Message)
+			}
+		case []int:
+			array, ok := evaluated.(*object.Array)
+			if !ok {
+				t.Errorf("object is not Array. got=%T (%+v)", evaluated, evaluated)
+				continue
+			}
+			if len(array.Elements) != len(expected) {
+				t.Errorf("wrong num of elements. want=%d, got=%d",
+					len(expected), len(array.Elements))
+				continue
+			}
+			for i, expectedElem := range expected {
+				testIntegerObject(t, array.Elements[i], int64(expectedElem))
 			}
 		}
 	}
@@ -336,6 +388,64 @@ func TestArrayLiterals(t *testing.T) {
 	testIntegerObject(t, result.Elements[0], 1)
 	testIntegerObject(t, result.Elements[1], 4)
 	testIntegerObject(t, result.Elements[2], 6)
+}
+
+func TestArrayIndexExpression(t *testing.T) {
+	tests := []struct {
+		input    string
+		expected interface{}
+	}{
+		{
+			"[1, 2, 3][0]",
+			1,
+		},
+		{
+			"[1, 2, 3][1]",
+			2,
+		},
+		{
+			"[1, 2, 3][2]",
+			3,
+		},
+		{
+			"let i = 0; [1][i];",
+			1,
+		},
+		{
+			"[1, 2, 3][1 + 1]",
+			3,
+		},
+		{
+			"let myArray = [1, 2, 3]; myArray[2];",
+			3,
+		},
+		{
+			"let myArray = [1, 2, 3]; myArray[0] + myArray[1] + myArray[2];",
+			6,
+		},
+		{
+			"let myArray = [1, 2, 3]; let i = myArray[0]; myArray[i]",
+			2,
+		},
+		{
+			"[1, 2, 3][3]",
+			nil,
+		},
+		{
+			"[1, 2, 3][-1]",
+			nil,
+		},
+	}
+
+	for _, tt := range tests {
+		evaluated := testEval(tt.input)
+		integer, ok := tt.expected.(int)
+		if ok {
+			testIntegerObject(t, evaluated, int64(integer))
+		} else {
+			testNullObject(t, evaluated)
+		}
+	}
 }
 
 // helper functions
